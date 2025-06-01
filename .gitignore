@@ -1,2 +1,5 @@
 # Thư mục Visual Studio
 .vs/
+bin/
+obj/
+.env
