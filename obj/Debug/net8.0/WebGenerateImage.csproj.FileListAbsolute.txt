@@ -60,3 +60,7 @@ F:\webAI\WebGenerateImage\obj\Debug\net8.0\refint\WebGenerateImage.dll
 F:\webAI\WebGenerateImage\obj\Debug\net8.0\WebGenerateImage.pdb
 F:\webAI\WebGenerateImage\obj\Debug\net8.0\WebGenerateImage.genruntimeconfig.cache
 F:\webAI\WebGenerateImage\obj\Debug\net8.0\ref\WebGenerateImage.dll
+F:\webAI\WebGenerateImage\bin\Debug\net8.0\DotNetEnv.dll
+F:\webAI\WebGenerateImage\bin\Debug\net8.0\Sprache.dll
+F:\webAI\WebGenerateImage\obj\Debug\net8.0\WebGenerateImage.csproj.AssemblyReference.cache
+F:\webAI\WebGenerateImage\obj\Debug\net8.0\WebGener.0857C4BD.Up2Date
