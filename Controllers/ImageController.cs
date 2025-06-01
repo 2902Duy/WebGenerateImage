@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using WebGenerateImage.Models;
-using WebGenerateImage.Models;
-
+using DotNetEnv;
 public class ImageController : Controller
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    private const string API_URL = "1";
-    private const string API_KEY = "2";
+private string API_URL = Environment.GetEnvironmentVariable("API_URL_HUG");
+
+private string API_KEY = Environment.GetEnvironmentVariable("API_KEY_HUG");
+
 
     public ImageController(IHttpClientFactory httpClientFactory)
     {
+        DotNetEnv.Env.Load();
         _httpClientFactory = httpClientFactory;
     }
 
