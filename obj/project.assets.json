@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Web\\WebGenerateImage\\WebGenerateImage.csproj",
+      "projectUniqueName": "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
       "projectName": "WebGenerateImage",
-      "projectPath": "F:\\Web\\WebGenerateImage\\WebGenerateImage.csproj",
+      "projectPath": "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
       "packagesPath": "C:\\Users\\ThinkPad\\.nuget\\packages\\",
-      "outputPath": "F:\\Web\\WebGenerateImage\\obj\\",
+      "outputPath": "F:\\webAI\\WebGenerateImage\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ThinkPad\\AppData\\Roaming\\NuGet\\NuGet.Config",

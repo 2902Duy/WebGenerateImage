@@ -1,8 +1,61 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hiệu ứng particles nền nếu bạn đã tích hợp -->
+<div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
+
+<section class="d-flex flex-column justify-content-center align-items-center text-center py-5" style="min-height: 90vh;">
+    <h1 class="display-4 fw-bold" style="color: #8fff8f;">
+        Tạo ảnh AI online miễn phí:<br />
+        Biến văn bản thành hình ảnh
+    </h1>
+
+    <p class="lead text-light col-md-8 mt-4">
+        Tạo ảnh AI trực tuyến trong vài giây với trình tạo hình ảnh miễn phí của chúng tôi.<br />
+        Hãy để trí tưởng tượng của bạn biến thành nghệ thuật đáng kinh ngạc – không quảng cáo, không giới hạn.
+    </p>
+
+    <!-- ✅ Nút dẫn đến ImageController.Index (Views/Image/Index.cshtml) -->
+    <a asp-controller="Image" asp-action="Index" class="btn btn-success btn-lg mt-4 px-4 py-2 fw-semibold">
+        Tạo ảnh AI ngay bây giờ
+    </a>
+</section>
+
+@section Scripts {
+    <!-- Nếu bạn đang dùng particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 60 },
+                color: { value: "#00ffcc" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00ffcc",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.5,
+                    direction: "none",
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                events: {
+                    onhover: { enable: true, mode: "grab" }
+                },
+                modes: {
+                    grab: { distance: 200, line_linked: { opacity: 0.6 } }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+}
