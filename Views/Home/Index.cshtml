@@ -2,9 +2,10 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<!-- Hiệu ứng particles nền nếu bạn đã tích hợp -->
+<!-- Nếu bạn đã tích hợp particles.js, phần này sẽ tạo hiệu ứng nền -->
 <div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
 
+<!-- ================= HERO SECTION ================= -->
 <section class="d-flex flex-column justify-content-center align-items-center text-center py-5" style="min-height: 90vh;">
     <h1 class="display-4 fw-bold" style="color: #8fff8f;">
         Tạo ảnh AI online miễn phí:<br />
@@ -20,6 +21,149 @@
     <a asp-controller="Image" asp-action="Index" class="btn btn-success btn-lg mt-4 px-4 py-2 fw-semibold">
         Tạo ảnh AI ngay bây giờ
     </a>
+</section>
+
+<!-- ================= CÁC CARD DANH MỤC  ================= -->
+<section class="py-5" style="background-color: #000;">
+    <div class="container">
+        <h2 class="text-white text-center mb-5 fw-bold">Trải nghiệm nhiều loại và phong cách ảnh</h2>
+        <p class="text-center text-muted mb-5">
+            Tạo hình ảnh bằng AI trong Fotor và khám phá những khả năng vô tận. Có hàng nghìn phong cách ảnh và nghệ thuật.<br />
+            Cho dù bạn muốn bắt chước phong cách của các nghệ sĩ nổi tiếng, tạo hình nền và hình minh họa, tham gia
+            vào nghệ thuật hâm mộ cho các nhân vật anime và trò chơi hay thiết kế đồ trang trí nhà cửa và sản phẩm,
+            Fotor đều đáp ứng nhu cầu của bạn.
+        </p>
+
+        <div class="row g-4">
+            <!-- Card 1: Nghệ thuật NFT -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/nft-art.jpg"
+                         class="card-img-top"
+                         alt="Nghệ thuật NFT"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Nghệ thuật NFT</h5>
+                        <p class="card-text text-muted small">
+                            Biến tác phẩm nghệ thuật của bạn thành NFT phi thường theo phong cách của Van Gogh, Dadaism, v.v.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Phong cảnh -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/landscape.jpg"
+                         class="card-img-top"
+                         alt="Phong cảnh"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Phong cảnh</h5>
+                        <p class="card-text text-muted small">
+                            Tạo ra những bức tranh phong cảnh hấp dẫn theo phong cách ấn tượng, siêu thực, tranh thủy mặc, v.v.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Phim hoạt hình & Anime -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/anime.jpg"
+                         class="card-img-top"
+                         alt="Phim hoạt hình & Anime"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Phim hoạt hình & Anime</h5>
+                        <p class="card-text text-muted small">
+                            Biến hình ảnh thành phong cách hoạt hình của Disney, Makoto Shinkai, Miyazaki Hayao, v.v.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Hình thu nhỏ & Bìa -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/thumbnail.jpg"
+                         class="card-img-top"
+                         alt="Hình thu nhỏ & Bìa"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Hình thu nhỏ & Bìa</h5>
+                        <p class="card-text text-muted small">
+                            Tạo và chỉnh sửa hình thu nhỏ, bìa video bắt mắt như nghệ thuật OP và ấn tượng.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Nội thất & Kiến trúc -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/interior.jpg"
+                         class="card-img-top"
+                         alt="Nội thất & Kiến trúc"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Nội thất & Kiến trúc</h5>
+                        <p class="card-text text-muted small">
+                            Tạo phối cảnh nội thất sang trọng hoặc kiến trúc hiện đại – phù hợp thiết kế nội thất và quy hoạch đô thị.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Chân dung nghệ thuật -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/portrait.jpg"
+                         class="card-img-top"
+                         alt="Chân dung nghệ thuật"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Chân dung nghệ thuật</h5>
+                        <p class="card-text text-muted small">
+                            Biến ảnh chân dung thành tranh sơn dầu, tranh acrylic hoặc phác thảo chì đầy nghệ thuật.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: Thực phẩm & Thức uống -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/food.jpg"
+                         class="card-img-top"
+                         alt="Thực phẩm & Thức uống"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Thực phẩm & Thức uống</h5>
+                        <p class="card-text text-muted small">
+                            Tạo hình ảnh món ăn, đồ uống theo phong cách quảng cáo chuyên nghiệp, ẩm thực sang trọng.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8: Logo & Nhãn hiệu -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 bg-dark text-white shadow-sm">
+                    <img src="~/images/categories/logo1.jpg"
+                         class="card-img-top"
+                         alt="Logo & Nhãn hiệu"
+                         style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Logo & Nhãn hiệu</h5>
+                        <p class="card-text text-muted small">
+                            Tạo và chỉnh sửa logo/nhãn hiệu – phù hợp cho thương hiệu, bản quyền hoặc dự án cá nhân.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 @section Scripts {
