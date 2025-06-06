@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebGenerateImage")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcf519b5782e3cf1c83226bd6208e6e9acec2302")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+89b8552504518e4e71ddfa5ec6ab5027802b5e43")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebGenerateImage")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebGenerateImage")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

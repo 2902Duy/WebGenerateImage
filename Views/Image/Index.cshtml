@@ -1,16 +1,47 @@
 ﻿@model WebGenerateImage.Models.ImagePrompt
+@using DotNetEnv
 @{
     ViewData["Title"] = "Tạo ảnh từ AI";
+    ViewBag.GOOGLE_TRANSLATE_API = Environment.GetEnvironmentVariable("GOOGLE_TRANSLATE_API");
+}
+
+@section Scripts {
+    @* <script>
+            document.querySelector('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const originalText = document.querySelector('#user-prompt').value.trim();
+            const hiddenInput = document.querySelector('#translated-prompt');
+
+            //const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=en&dt=t&q=${encodeURIComponent(originalText)}`;
+            const url_trans='@ViewBag.GOOGLE_TRANSLATE_API';
+            const url = url_trans+`?client=gtx&sl=vi&tl=en&dt=t&q=${encodeURIComponent(originalText)}`;
+            console.log("Translating text:", url);
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const translated = data[0][0][0];
+
+                hiddenInput.value = translated;
+                this.submit();
+            } catch (error) {
+                alert("Lỗi dịch tự động. Vui lòng thử lại.");
+                console.error(error);
+            }
+        });
+    </script> *@
 }
 
 <section class="container py-5 text-center">
-    <h2 class="text-success mb-4">🧠 Nhập mô tả để tạo ảnh bằng AI</h2>
+    <h2 class="text-success mb-4">Nhập mô tả để tạo ảnh bằng AI</h2>
 
     <form method="post" asp-controller="Image" asp-action="Generate" class="mx-auto" style="max-width: 700px;">
         <div class="mb-3">
-            <textarea class="form-control" name="Prompt" rows="4" placeholder="Ví dụ: Một con mèo đang bay trong không gian...">@Model?.Prompt</textarea>
+            <textarea class="form-control" name="Prompt" id="prompt" rows="4"
+                      placeholder="Ví dụ: Một con mèo đang bay trong không gian...">@Model?.Prompt</textarea>
             <span asp-validation-for="Prompt" class="text-danger"></span>
         </div>
+        @* <input type="hidden" name="Prompt" id="translated-prompt" /> *@
         <button type="submit" class="btn btn-success btn-lg px-5">Tạo ảnh</button>
     </form>
 </section>

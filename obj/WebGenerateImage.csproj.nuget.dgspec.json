@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj": {}
+    "D:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj": {}
   },
   "projects": {
-    "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj": {
+    "D:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
+        "projectUniqueName": "D:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
         "projectName": "WebGenerateImage",
-        "projectPath": "F:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
-        "packagesPath": "C:\\Users\\ThinkPad\\.nuget\\packages\\",
-        "outputPath": "F:\\webAI\\WebGenerateImage\\obj\\",
+        "projectPath": "D:\\webAI\\WebGenerateImage\\WebGenerateImage.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\webAI\\WebGenerateImage\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\ThinkPad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -69,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
