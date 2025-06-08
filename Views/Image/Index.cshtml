@@ -1,41 +1,14 @@
 ﻿@model WebGenerateImage.Models.ImagePrompt
 @using DotNetEnv
+
 @{
     ViewData["Title"] = "Tạo ảnh từ AI";
     ViewBag.GOOGLE_TRANSLATE_API = Environment.GetEnvironmentVariable("GOOGLE_TRANSLATE_API");
 }
 
-@section Scripts {
-@* Nếu cần bật chức năng dịch tự động, có thể giải nén đoạn script bên dưới *@
-@*
-        <script>
-            document.querySelector('form').addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const originalText = document.querySelector('#prompt').value.trim();
-                const hiddenInput = document.querySelector('#translated-prompt');
-
-                const url_trans = '@ViewBag.GOOGLE_TRANSLATE_API';
-                const url = url_trans + `?client=gtx&sl=vi&tl=en&dt=t&q=${encodeURIComponent(originalText)}`;
-                console.log("Translating text:", url);
-
-                try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    const translated = data[0][0][0];
-
-                    hiddenInput.value = translated;
-                    this.submit();
-                } catch (error) {
-                    alert("Lỗi dịch tự động. Vui lòng thử lại.");
-                    console.error(error);
-                }
-            });
-        </script>
-        *@
-}
-
 <section class="container py-5">
-    <div class="row justify-content-center">
+    <div class="row gy-4">
+        <!-- Form chính -->
         <div class="col-lg-8">
             <div class="card bg-dark border-0 shadow-sm">
                 <div class="card-body">
@@ -47,7 +20,7 @@
                         <p class="text-muted">Viết chi tiết giúp AI hiểu rõ ý tưởng của bạn.</p>
                     </div>
 
-                    <form method="post" asp-controller="Image" asp-action="Generate">
+                    <form id="generateForm" method="post" asp-controller="Image" asp-action="Generate">
                         <div class="mb-3">
                             <label for="prompt" class="form-label text-white fw-semibold">Mô tả (Tiếng Việt)</label>
                             <textarea class="form-control form-control-lg"
@@ -58,25 +31,85 @@
                             <span asp-validation-for="Prompt" class="text-danger mt-1 d-block"></span>
                         </div>
 
-                        @* Nếu bật dịch tự động, mở comment và dùng dòng hidden này *@
-                        @* <input type="hidden" name="Prompt" id="translated-prompt" /> *@
-
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg rounded-pill">
+                            <button id="submitBtn" type="submit" class="btn btn-success btn-lg rounded-pill">
                                 <i class="bi bi-rocket-takeoff-fill me-2"></i> Tạo ảnh ngay
                             </button>
                         </div>
                     </form>
+
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger bg-opacity-10 border-danger text-danger mt-3" role="alert">
+                            Vui lòng kiểm tra lại thông tin vừa nhập.
+                        </div>
+                    }
                 </div>
             </div>
 
-            @* Khu vực hiển thị lỗi chung nếu có *@
-            @if (ViewData.ModelState.ErrorCount > 0)
-            {
-                <div class="alert alert-danger bg-opacity-10 border-danger text-danger mt-3" role="alert">
-                    Vui lòng kiểm tra lại thông tin vừa nhập.
+            <!-- Accordion Tips -->
+            <div class="accordion mt-4" id="tipsAccordion">
+                <div class="accordion-item bg-dark text-white border-0">
+                    <h2 class="accordion-header" id="headingTips">
+                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTips" aria-expanded="false" aria-controls="collapseTips">
+                            <i class="bi bi-lightbulb-fill me-2"></i> Mẹo viết prompt chất
+                        </button>
+                    </h2>
+                    <div id="collapseTips" class="accordion-collapse collapse" aria-labelledby="headingTips" data-bs-parent="#tipsAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Chỉ rõ phong cách (ví dụ: <em>cyberpunk</em>, <em>oil painting</em>).</li>
+                                <li>Mô tả chi tiết ánh sáng, màu sắc, góc nhìn.</li>
+                                <li>Đưa vào cảm xúc hoặc bối cảnh (ví dụ: <em>mùa đông buồn</em>).</li>
+                                <li>Giới hạn các chi tiết dư thừa để tránh noise.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            }
+            </div>
+        </div>
+
+        <!-- Sidebar: Ví dụ prompt -->
+        <div class="col-lg-4">
+            <div class="card bg-dark border-0 shadow-sm h-100">
+                <div class="card-header bg-secondary text-white">
+                    <i class="bi bi-list-check me-2"></i> Ví dụ prompt mẫu
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Chân dung nữ hacker trong phòng neon cyberpunk">1. Hacker neon</button>
+                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Phong cảnh núi non hùng vĩ dưới bình minh">2. Núi bình minh</button>
+                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Thiết kế poster concert ban nhạc rock retro">3. Poster rock</button>
+                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Nền vũ trụ với các hành tinh màu tím và sao băng">4. Vũ trụ tím</button>
+                    <small class="text-muted">Click để tự động điền vào ô mô tả.</small>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        // Spinner khi submit
+        document.getElementById("generateForm").addEventListener("submit", function () {
+            var btn = document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Đang tạo...';
+        });
+
+        // Điền prompt mẫu
+        document.querySelectorAll(".prompt-example").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                document.getElementById("prompt").value = this.getAttribute("data-prompt");
+            });
+        });
+    </script>
+
+@* Nếu muốn bật dịch tự động, giải nén đoạn dưới *@
+@*
+        <script>
+            document.querySelector('form').addEventListener('submit', async function (e) {
+                // ...
+            });
+        </script>
+        *@
+}

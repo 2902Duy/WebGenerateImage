@@ -10,4 +10,10 @@
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\features\" />
+    <Folder Include="wwwroot\images\icons\" />
+    <Folder Include="wwwroot\images\MyLibrary\" />
+  </ItemGroup>
+
 </Project>

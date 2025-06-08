@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -72,4 +73,18 @@ private string GOOGLE_TRANSLATE_API = Environment.GetEnvironmentVariable("GOOGLE
 
         return View("Index", model);
     }
+    // nếu cần bảo vệ bằng login, hoặc bỏ đi nếu chưa có
+    public IActionResult MyLibrary()
+    {
+        // Tạm thời dùng danh sách URL mẫu để thiết kế giao diện
+        var dummyImages = new List<string>
+    {
+        "/images/MyLibrary/sample1.jpg",
+        "/images/MyLibrary/sample2.jpg",
+        "/images/MyLibrary/sample3.jpg",
+        "/images/MyLibrary/sample4.jpg"
+    };
+        return View(dummyImages);
+    }
+
 }

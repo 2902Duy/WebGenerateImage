@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Tải ảnh lên";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-3">
+    <div class="mb-3">
+        <label for="file" class="form-label">Chọn tệp ảnh</label>
+        <input type="file" name="file" id="file" class="form-control" accept="image/*" required />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-cloud-upload"></i> Upload
+    </button>
+    <a asp-action="MyLibrary" class="btn btn-secondary ms-2">Quay lại</a>
+</form>
