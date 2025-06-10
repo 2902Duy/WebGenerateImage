@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "So sánh ảnh";
+}
+
+<h2>So sánh ảnh gốc và ảnh sau khi tạo</h2>
+<p>Image Strength: @ViewBag.Strength</p>
+
+<div style="display: flex; gap: 40px;">
+    <div>
+        <h4>Ảnh Gốc</h4>
+        <img src="@ViewBag.OriginalImage" style="max-width: 400px; border: 1px solid gray;" />
+    </div>
+    <div>
+        <h4>Ảnh Đã Tạo</h4>
+        <img src="@ViewBag.GeneratedImage" style="max-width: 400px; border: 1px solid gray;" />
+    </div>
+</div>
