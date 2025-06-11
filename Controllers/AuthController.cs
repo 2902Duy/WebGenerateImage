@@ -35,6 +35,15 @@ namespace WebGenerateImage.Controllers
         public IActionResult Register() => View();
 
         [HttpGet]
+<<<<<<< HEAD
+        public IActionResult GoogleLogin(string returnUrl = null)
+        {
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", Url.Action("ExternalLoginCallback", new { returnUrl }));
+            return Challenge(properties, "Google");
+        }
+
+
+=======
         public IActionResult GoogleLogin()
         {
             var properties = new AuthenticationProperties
@@ -44,6 +53,7 @@ namespace WebGenerateImage.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+>>>>>>> b8a5d94280eca18e8a4fc26a82c4a703c49a6d42
         [HttpPost]
         public async Task<IActionResult> SendOtp(string email)
         {
@@ -159,6 +169,63 @@ namespace WebGenerateImage.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+<<<<<<< HEAD
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl ??= Url.Action("Index", "Home");
+
+            if (remoteError != null)
+            {
+                ViewData["Error"] = $"Lỗi xác thực: {remoteError}";
+                return View("Login");
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ViewData["Error"] = "Không thể lấy thông tin từ nhà cung cấp.";
+                return View("Login");
+            }
+
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+
+            if (result.Succeeded)
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if (user == null)
+                    {
+                        user = new IdentityUser
+                        {
+                            UserName = email,
+                            Email = email
+                        };
+                        var createResult = await _userManager.CreateAsync(user);
+                        if (!createResult.Succeeded)
+                        {
+                            ViewData["Error"] = "Không thể tạo tài khoản.";
+                            return View("Login");
+                        }
+                    }
+
+                    await _userManager.AddLoginAsync(user, info);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return Redirect(returnUrl);
+                }
+
+                ViewData["Error"] = "Không thể xác thực từ Google.";
+                return View("Login");
+            }
+        }
+=======
+>>>>>>> b8a5d94280eca18e8a4fc26a82c4a703c49a6d42
 
         [HttpGet]
         public async Task<IActionResult> GoogleResponse()

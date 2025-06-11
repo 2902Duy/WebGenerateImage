@@ -41,7 +41,11 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
                 return Page();
 
             var user = await _userManager.FindByEmailAsync(Input.Email);
+<<<<<<< HEAD
+            if (user == null /*|| !(await _userManager.IsEmailConfirmedAsync(user))*/)
+=======
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+>>>>>>> b8a5d94280eca18e8a4fc26a82c4a703c49a6d42
             {
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

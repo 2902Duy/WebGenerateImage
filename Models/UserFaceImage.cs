@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity; // cần để dùng IdentityUser
+
+using Microsoft.AspNetCore.Identity; 
+
 
 namespace WebGenerateImage.Models
 {

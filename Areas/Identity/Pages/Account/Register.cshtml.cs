@@ -118,6 +118,11 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 _logger.LogInformation("Người dùng mới đã được tạo.");
+<<<<<<< HEAD
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await _userManager.ConfirmEmailAsync(user, token);
+=======
+>>>>>>> b8a5d94280eca18e8a4fc26a82c4a703c49a6d42
 
                 // Gán role mặc định nếu cần
                 await _userManager.AddToRoleAsync(user, "User");
