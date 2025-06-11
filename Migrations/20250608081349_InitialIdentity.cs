@@ -73,7 +73,7 @@ namespace WebGenerateImage.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageToImage",
+                name: "ImageToImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -217,20 +217,20 @@ namespace WebGenerateImage.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserFaceImages",
+                name: "FaceAuthentications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsFaceAuth = table.Column<bool>(type: "bit", nullable: false)
+                    IsFaceAuth = table.Column<bool>(type: "bit", nullable: false),
+                    IsFaceVerified = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserFaceImages", x => x.Id);
+                    table.PrimaryKey("PK_FaceAuthentications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserFaceImages_AspNetUsers_UserId",
+                        name: "FK_FaceAuthentications_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -277,14 +277,20 @@ namespace WebGenerateImage.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFaceImages_UserId",
-                table: "UserFaceImages",
+                name: "IX_FaceAuthentications_UserId",
+                table: "FaceAuthentications",
                 column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ImagePrompts");
+
+            migrationBuilder.DropTable(
+                name: "ImageToImages");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -304,7 +310,7 @@ namespace WebGenerateImage.Migrations
                 name: "OtpCodes");
 
             migrationBuilder.DropTable(
-                name: "UserFaceImages");
+                name: "FaceAuthentications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

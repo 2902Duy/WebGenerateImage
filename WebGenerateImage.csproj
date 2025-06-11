@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\Users\167929a9-361a-416a-a599-07715a9de395\**" />
+    <Content Remove="wwwroot\images\Users\167929a9-361a-416a-a599-07715a9de395\**" />
+    <EmbeddedResource Remove="wwwroot\images\Users\167929a9-361a-416a-a599-07715a9de395\**" />
+    <None Remove="wwwroot\images\Users\167929a9-361a-416a-a599-07715a9de395\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="MailKit" Version="4.12.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.16" />
@@ -21,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\User\167929a9-361a-416a-a599-07715a9de395\ImagePrompt\" />
-    <Folder Include="wwwroot\images\User\167929a9-361a-416a-a599-07715a9de395\ImageToImage\" />
+    <Folder Include="wwwroot\images\Users\893a153a-7cea-4329-a276-b2030893fd74\ImagePrompt\" />
+    <Folder Include="wwwroot\images\Users\893a153a-7cea-4329-a276-b2030893fd74\ImageToImage\" />
   </ItemGroup>
 
 </Project>

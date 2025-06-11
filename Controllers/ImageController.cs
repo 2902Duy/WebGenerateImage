@@ -171,7 +171,7 @@ public class ImageController : Controller
             var base64 = data.RootElement.GetProperty("artifacts")[0].GetProperty("base64").GetString();
             var bytes = Convert.FromBase64String(base64);
             var outputFileName = $"generated_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
-            var outputPath = Path.Combine($"wwwroot/images/User/{userId}/ImageToImage", outputFileName);
+            var outputPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", outputFileName);
             await System.IO.File.WriteAllBytesAsync(outputPath, bytes);
 
             var record = new ImageToImage
@@ -182,18 +182,12 @@ public class ImageController : Controller
                 UserId = userId,
                 CreatedAt = DateTime.Now
             };
-            try
-            {
-                _context.ImageToImage.Add(record);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                var inner = ex.InnerException?.Message ?? ex.Message;
-                return Content("Lỗi khi lưu vào CSDL: " + inner);
-            }
-            ViewBag.OriginalImage = $"/images/User/{userId}/ImageToImage/{originalFileName}";
-            ViewBag.GeneratedImage = $"/images/User/{userId}/ImageToImage/{outputFileName}";
+            
+            _context.ImageToImages.Add(record);
+            await _context.SaveChangesAsync();
+            
+            ViewBag.OriginalImage = $"/images/Users/{userId}/ImageToImage/{originalFileName}";
+            ViewBag.GeneratedImage = $"/images/Users/{userId}/ImageToImage/{outputFileName}";
             ViewBag.Strength = imageStrength;
 
             return View("Transformation");

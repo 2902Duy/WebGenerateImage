@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity; // cần để dùng IdentityUser
 
 namespace WebGenerateImage.Models
 {
-    public class UserFaceImage
+    public class FaceAuthentication
     {
         [Key]
         public int Id { get; set; }
@@ -14,9 +14,7 @@ namespace WebGenerateImage.Models
 
         [ForeignKey("UserId")]
         public IdentityUser? User { get; set; }
-
-        public string ImagePath { get; set; } = string.Empty;
-
         public bool IsFaceAuth { get; set; } = false;
+        public bool IsFaceVerified { get; set; } = false;
     }
 }
