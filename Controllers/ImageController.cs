@@ -1,27 +1,36 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using WebGenerateImage.Models;
-using System.Drawing;
-using System.Drawing.Imaging;
 
+[Authorize]
 public class ImageController : Controller
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly AppDbContext _context;
+
+    
+    public ImageController(IHttpClientFactory httpClientFactory, IHttpClientFactory clientFactory, AppDbContext context)
+    {
+        DotNetEnv.Env.Load();
+        _httpClientFactory = httpClientFactory;
+        _clientFactory = clientFactory;
+        _context = context;
+
+    }
 
     private string API_URL = Environment.GetEnvironmentVariable("API_URL_HUG");
 
     private string API_KEY = Environment.GetEnvironmentVariable("API_KEY_HUG");
 
     private string GOOGLE_TRANSLATE_API = Environment.GetEnvironmentVariable("GOOGLE_TRANSLATE_API");
-    public ImageController(IHttpClientFactory httpClientFactory, IHttpClientFactory clientFactory)
-    {
-        DotNetEnv.Env.Load();
-        _httpClientFactory = httpClientFactory;
-        _clientFactory = clientFactory;
-    }
 
     public IActionResult Index()
     {
@@ -46,7 +55,7 @@ public class ImageController : Controller
 
             var translateResponse = await translateClient.GetStringAsync(translateUrl);
 
-            
+
             using var jsonDoc = JsonDocument.Parse(translateResponse);
             var translation = jsonDoc.RootElement[0][0][0].GetString();
             Console.WriteLine($"Translated Prompt: {translation}");
@@ -58,14 +67,20 @@ public class ImageController : Controller
 
             if (response.IsSuccessStatusCode)
             {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                 var bytes = await response.Content.ReadAsByteArrayAsync();
                 var fileName = $"{Guid.NewGuid()}.png";
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", $"images/Users/{userId}/ImagePrompt", fileName);
 
                 await System.IO.File.WriteAllBytesAsync(savePath, bytes);
-
-                model.ImagePath = "/images/" + fileName;
+                
+                model.UserId = userId;
+                model.ImagePath = $"/images/Users/{userId}/ImagePrompt/" + fileName;
+                model.CreatedAt= DateTime.Now;
+                _context.ImagePrompts.Add(model);
+                await _context.SaveChangesAsync();
                 return View("Result", model);
+                
             }
 
             ModelState.AddModelError("", "API lỗi: " + response.StatusCode);
@@ -113,9 +128,10 @@ public class ImageController : Controller
                 return BadRequest("Không có ảnh.");
             var resizedStream = ResizeImage(initImage.OpenReadStream(), 1024, 1024);
 
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             // Lưu bản gốc (chưa resize) nếu cần
             var originalFileName = $"original_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
-            var originalPath = Path.Combine("wwwroot/images", originalFileName);
+            var originalPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", originalFileName);
             Directory.CreateDirectory(Path.GetDirectoryName(originalPath)!);
             using (var fileStream = new FileStream(originalPath, FileMode.Create))
             {
@@ -155,14 +171,32 @@ public class ImageController : Controller
             var base64 = data.RootElement.GetProperty("artifacts")[0].GetProperty("base64").GetString();
             var bytes = Convert.FromBase64String(base64);
             var outputFileName = $"generated_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
-            var outputPath = Path.Combine("wwwroot/images", outputFileName);
+            var outputPath = Path.Combine($"wwwroot/images/User/{userId}/ImageToImage", outputFileName);
             await System.IO.File.WriteAllBytesAsync(outputPath, bytes);
 
-            ViewBag.OriginalImage = $"/images/{originalFileName}";
-            ViewBag.GeneratedImage = $"/images/{outputFileName}";
+            var record = new ImageToImage
+            {
+                imagePathOrigin = $"/images/Users/{userId}/ImageToImage/{originalFileName}",
+                strength = float.Parse(imageStrength, CultureInfo.InvariantCulture),
+                imagePathGenerate = $"/images/Users/{userId}/ImageToImage/{outputFileName}",
+                UserId = userId,
+                CreatedAt = DateTime.Now
+            };
+            try
+            {
+                _context.ImageToImage.Add(record);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                var inner = ex.InnerException?.Message ?? ex.Message;
+                return Content("Lỗi khi lưu vào CSDL: " + inner);
+            }
+            ViewBag.OriginalImage = $"/images/User/{userId}/ImageToImage/{originalFileName}";
+            ViewBag.GeneratedImage = $"/images/User/{userId}/ImageToImage/{outputFileName}";
             ViewBag.Strength = imageStrength;
 
-            return View("Compare");
+            return View("Transformation");
         }
         catch (Exception ex)
         {

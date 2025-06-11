@@ -1,0 +1,61 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập ";
+}
+
+<h1 class="mb-4 text-center">@ViewData["Title"]</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <section>
+            <form id="account" method="post" novalidate>
+                <h4 class="mb-3">Sử dụng tài khoản đăng nhập</h4>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" placeholder="Password" />
+                    <label asp-for="Input.Password">Mật khẩu</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="Input.RememberMe" class="form-check-input" id="rememberMeCheck" />
+                    <label class="form-check-label" for="rememberMeCheck">
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div>
+
+                <button id="login-submit" type="submit" class="btn btn-primary w-100 mb-3">Đăng nhập</button>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký tài khoản mới</a>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div class="col-md-1 d-flex align-items-center justify-content-center">
+        <div class="vr" style="height: 200px;"></div>
+    </div>
+
+    <div class="col-md-5 col-lg-4 text-center">
+        <h4 class="mb-3">Hoặc đăng nhập với Google</h4>
+        <a href="@Url.Action("GoogleLogin", "Auth")" title="Đăng nhập với Google">
+            <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Đăng nhập với Google" />
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
