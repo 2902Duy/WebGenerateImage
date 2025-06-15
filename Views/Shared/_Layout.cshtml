@@ -2,29 +2,28 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - AIImageWeb</title>
 
-    <!-- Bootstrap + custom dark mode -->
-    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" />
 
     <style>
+        /* ---------- Global Styles ---------- */
         body {
             background-color: #000;
             color: #fff;
             font-family: 'Poppins', sans-serif;
         }
 
-        a, .text-primary, .btn-link {
-            color: #0dcaf0;
-        }
-
         .form-control {
             background-color: #1a1a1a;
-            color: white;
+            color: #fff;
             border: 1px solid #444;
         }
 
@@ -34,7 +33,7 @@
 
         .card {
             background-color: #1e1e1e;
-            color: white;
+            color: #fff;
             border: 1px solid #333;
             transition: transform 0.3s ease;
         }
@@ -58,38 +57,96 @@
             border-color: #198754;
         }
 
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            margin-left: 1rem;
+        footer {
+            background-color: #111;
+            color: #888;
         }
 
-            .nav-link:hover {
-                color: #0dcaf0;
+        /* ---------- Navbar Glassmorphism ---------- */
+        .navbar-glass {
+            background-color: rgba(0, 0, 0, 0.4) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+            .navbar-glass.scrolled {
+                background-color: rgba(0, 0, 0, 0.7) !important;
             }
+
+            .navbar-glass .navbar-brand span {
+                color: #fff;
+            }
+
+            .navbar-glass .navbar-nav .nav-link {
+                color: rgba(255, 255, 255, 0.85);
+                margin-left: 1rem;
+                transition: color 0.2s ease;
+            }
+
+                .navbar-glass .navbar-nav .nav-link:hover {
+                    color: #0dcaf0;
+                }
     </style>
 </head>
 <body>
-    <header class="d-flex justify-content-between align-items-center p-3 bg-dark text-white">
-        <div class="d-flex align-items-center">
-            <img src="/images/imageweb/logo.jpg" alt="Logo" style="height: 40px; margin-right: 10px;">
-            <span class="fs-4 fw-bold">AIImageWeb</span>
+    <!-- Navbar with Glass Effect -->
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark navbar-glass shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="/images/imageweb/logo.jpg" alt="Logo" style="height: 40px; margin-right: 8px;" />
+                <span class="fs-4 fw-bold">AIImageWeb</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Image" asp-action="Index">Tạo ảnh từ AI</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Image" asp-action="MyLibrary">Thư viện</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <nav class="d-flex align-items-center">
-            <a href="/" class="nav-link">Trang chủ</a>
-            <a href="/image" class="nav-link">Tạo ảnh từ AI</a>
-            <a href="/Image/MyLibrary" class="nav-link">Thư viện</a>
-            <a asp-area="Identity" asp-page="/Account/Login" class="nav-link">Đăng nhập</a>
-        </nav>
-    </header>
+    </nav>
 
     <main class="container py-4">
         @RenderBody()
     </main>
 
-    <footer class="text-center py-3 border-top">
-        &copy; 2025 - AIImageWeb
+    <footer class="text-center py-3">
+        <div class="container">
+            &copy; 2025 - AIImageWeb
+        </div>
     </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar Scroll Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const navbar = document.querySelector(".navbar-glass");
+            window.addEventListener("scroll", function () {
+                if (window.scrollY > 50) {
+                    navbar.classList.add("scrolled");
+                } else {
+                    navbar.classList.remove("scrolled");
+                }
+            });
+        });
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

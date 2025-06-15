@@ -6,11 +6,21 @@
 <section class="container py-5 text-center">
     <h2 class="text-info mb-4">Ảnh được tạo từ mô tả</h2>
 
-    <p class="lead text-light"><strong class="text-success">@Model.Prompt</strong></p>
+    <p class="lead text-light">
+        <strong class="text-success">@Model.Prompt</strong>
+    </p>
 
     <img src="@Model.ImagePath" alt="AI Image" class="img-fluid rounded shadow mt-4" style="max-height: 500px;" />
 
     <div class="mt-4">
-        <a href="/Image" class="btn btn-outline-info">Tạo ảnh mới</a>
+        <!-- Nút tải về ảnh -->
+        <a href="@Model.ImagePath" download class="btn btn-success me-2">
+            <i class="bi bi-download"></i> Lưu ảnh
+        </a>
+
+        <!-- Nút tạo ảnh mới -->
+        <a href="/Image" class="btn btn-outline-info">
+            <i class="bi bi-arrow-clockwise"></i> Tạo ảnh mới
+        </a>
     </div>
 </section>

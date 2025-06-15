@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -30,6 +30,12 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\Users\893a153a-7cea-4329-a276-b2030893fd74\ImagePrompt\" />
     <Folder Include="wwwroot\images\Users\893a153a-7cea-4329-a276-b2030893fd74\ImageToImage\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\features\" />
+    <Folder Include="wwwroot\images\icons\" />
+    <Folder Include="wwwroot\images\MyLibrary\" />
   </ItemGroup>
 
 </Project>
