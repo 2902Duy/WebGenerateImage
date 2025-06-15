@@ -114,7 +114,24 @@
                         <a class="nav-link" asp-area="" asp-controller="Image" asp-action="MyLibrary">Thư viện</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="mt-4 text-light">
+                                <p>👋 Xin chào, <strong>@User.Identity.Name</strong></p>
+                                <p>📧 Email: <strong>@User.FindFirst("email")?.Value</strong></p>
+
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Đăng xuất</button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Nút đăng nhập -->
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg mt-3 px-4 py-2 fw-semibold">
+                                Đăng nhập
+                            </a>
+                        }
                     </li>
                 </ul>
             </div>

@@ -1,16 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Tải ảnh lên";
+    ViewData["Title"] = "Upload Image";
+
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<h2>Upload ảnh để tạo lại bằng Stable Diffusion</h2>
 
-<form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-3">
-    <div class="mb-3">
-        <label for="file" class="form-label">Chọn tệp ảnh</label>
-        <input type="file" name="file" id="file" class="form-control" accept="image/*" required />
+<form asp-controller="Image" asp-action="Transformation" method="post" enctype="multipart/form-data">
+
+    <div>
+        <label>Chọn ảnh:</label><br />
+        <input type="file" name="initImage" accept="image/*" required />
     </div>
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-cloud-upload"></i> Upload
-    </button>
-    <a asp-action="MyLibrary" class="btn btn-secondary ms-2">Quay lại</a>
+    <div>
+        <label>Image Strength: <span id="strengthValue">0.35</span></label><br />
+        <input type="range" name="imageStrength" id="imageStrength" min="0.1" max="1.0" step="0.01" value="0.35"
+               oninput="document.getElementById('strengthValue').innerText = this.value" />
+    </div>
+    <button type="submit">Tạo ảnh</button>
 </form>

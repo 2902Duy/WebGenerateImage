@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -41,7 +41,7 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
                 return Page();
 
             var user = await _userManager.FindByEmailAsync(Input.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            if (user == null /*|| !(await _userManager.IsEmailConfirmedAsync(user))*/)
             {
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

@@ -17,15 +17,18 @@ namespace WebGenerateImage.Controllers
         private readonly EmailService _emailService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IWebHostEnvironment _env;
 
         public AuthController(AppDbContext db, EmailService emailService,
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IWebHostEnvironment env)
         {
             _db = db;
             _emailService = emailService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _env = env;
         }
 
         [HttpGet]
@@ -35,13 +38,10 @@ namespace WebGenerateImage.Controllers
         public IActionResult Register() => View();
 
         [HttpGet]
-        public IActionResult GoogleLogin()
+        public IActionResult GoogleLogin(string returnUrl = null)
         {
-            var properties = new AuthenticationProperties
-            {
-                RedirectUri = Url.Action("GoogleResponse")
-            };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", Url.Action("ExternalLoginCallback", new { returnUrl }));
+            return Challenge(properties, "Google");
         }
 
         [HttpPost]
@@ -128,17 +128,16 @@ namespace WebGenerateImage.Controllers
                 return View("Register");
             }
 
-            // ✅ Gán quyền mặc định là "User"
             await _userManager.AddToRoleAsync(user, "User");
 
-            // ✅ Xoá OTP sau khi đăng ký
+            CreateUserDirectory(user.Id); // ✅ Sử dụng Id thay vì email
+
             _db.OtpCodes.RemoveRange(_db.OtpCodes.Where(o => o.Email == email));
             await _db.SaveChangesAsync();
 
             ViewData["Success"] = "Đăng ký thành công. Mời bạn đăng nhập.";
             return View("Login");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
@@ -158,6 +157,70 @@ namespace WebGenerateImage.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl ??= Url.Action("Index", "Home");
+
+            if (remoteError != null)
+            {
+                ViewData["Error"] = $"Lỗi xác thực: {remoteError}";
+                return View("Login");
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ViewData["Error"] = "Không thể lấy thông tin từ nhà cung cấp.";
+                return View("Login");
+            }
+
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+
+            if (result.Succeeded)
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    CreateUserDirectory(user.Id); // ✅ Dùng Id thay vì email
+                }
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if (user == null)
+                    {
+                        user = new IdentityUser
+                        {
+                            UserName = email,
+                            Email = email
+                        };
+                        var createResult = await _userManager.CreateAsync(user);
+                        if (!createResult.Succeeded)
+                        {
+                            ViewData["Error"] = "Không thể tạo tài khoản.";
+                            return View("Login");
+                        }
+                    }
+
+                    await _userManager.AddLoginAsync(user, info);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    CreateUserDirectory(user.Id); // ✅ Dùng Id
+
+                    return Redirect(returnUrl);
+                }
+
+                ViewData["Error"] = "Không thể xác thực từ Google.";
+                return View("Login");
+            }
         }
 
         [HttpGet]
@@ -207,7 +270,21 @@ namespace WebGenerateImage.Controllers
                 return BadRequest("Email không tồn tại.");
 
             // TODO: Xác thực khuôn mặt - nếu đã bật thì xử lý tiếp
-            return Ok("Đăng nhập bằng khuôn mặt thành công .");
+            return Ok("Đăng nhập bằng khuôn mặt thành công.");
+        }
+
+
+        private void CreateUserDirectory(string userId)
+        {
+            var userFolder = Path.Combine(_env.WebRootPath, "Images", "Users", userId);
+            var promptFolder = Path.Combine(userFolder, "ImagePrompt");
+            var imageToImageFolder = Path.Combine(userFolder, "ImageToImage");
+
+            if (!Directory.Exists(userFolder))
+            {
+                Directory.CreateDirectory(promptFolder);
+                Directory.CreateDirectory(imageToImageFolder);
+            }
         }
     }
 }
