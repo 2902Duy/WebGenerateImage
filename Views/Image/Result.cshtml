@@ -1,0 +1,16 @@
+﻿@model WebGenerateImage.Models.ImagePrompt
+@{
+    ViewData["Title"] = "Kết quả ảnh AI";
+}
+
+<section class="container py-5 text-center">
+    <h2 class="text-info mb-4">Ảnh được tạo từ mô tả</h2>
+
+    <p class="lead text-light"><strong class="text-success">@Model.Prompt</strong></p>
+
+    <img src="@Model.ImagePath" alt="AI Image" class="img-fluid rounded shadow mt-4" style="max-height: 500px;" />
+
+    <div class="mt-4">
+        <a href="/Image" class="btn btn-outline-info">Tạo ảnh mới</a>
+    </div>
+</section>
