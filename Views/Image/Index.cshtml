@@ -7,32 +7,32 @@
 }
 
 <section class="container py-5">
-    <div class="row gy-4">
+    <div class="row gx-5 gy-4">
         <!-- Form chính -->
         <div class="col-lg-8">
-            <div class="card bg-dark border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h2 class="text-success">
-                            <i class="bi bi-image-fill me-2"></i>
-                            Nhập mô tả để tạo ảnh bằng AI
+            <div class="card bg-dark border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <h2 class="text-success fw-bold mb-2">
+                            <i class="bi bi-stars me-2"></i>
+                            Tạo ảnh với trí tuệ nhân tạo
                         </h2>
-                        <p class="text-muted">Viết chi tiết giúp AI hiểu rõ ý tưởng của bạn.</p>
+                        <p class="text-secondary fst-italic">Hãy mô tả thật sinh động để AI hiểu bạn đang tưởng tượng điều gì!</p>
                     </div>
 
                     <form id="generateForm" method="post" asp-controller="Image" asp-action="Generate">
-                        <div class="mb-3">
-                            <label for="prompt" class="form-label text-white fw-semibold">Mô tả (Tiếng Việt)</label>
-                            <textarea class="form-control form-control-lg"
+                        <div class="mb-4">
+                            <label for="prompt" class="form-label text-white fw-semibold">Mô tả ý tưởng bằng tiếng Việt</label>
+                            <textarea class="form-control form-control-lg rounded-4"
                                       name="Prompt"
                                       id="prompt"
                                       rows="5"
                                       placeholder="Ví dụ: Một con mèo đang bay trong không gian, nền tối, ánh sáng neon xanh...">@Model?.Prompt</textarea>
-                            <span asp-validation-for="Prompt" class="text-danger mt-1 d-block"></span>
+                            <span asp-validation-for="Prompt" class="text-danger mt-2 d-block"></span>
                         </div>
 
                         <div class="d-grid">
-                            <button id="submitBtn" type="submit" class="btn btn-success btn-lg rounded-pill">
+                            <button id="submitBtn" type="submit" class="btn btn-success btn-lg rounded-pill shadow">
                                 <i class="bi bi-rocket-takeoff-fill me-2"></i> Tạo ảnh ngay
                             </button>
                         </div>
@@ -40,28 +40,28 @@
 
                     @if (ViewData.ModelState.ErrorCount > 0)
                     {
-                        <div class="alert alert-danger bg-opacity-10 border-danger text-danger mt-3" role="alert">
-                            Vui lòng kiểm tra lại thông tin vừa nhập.
+                        <div class="alert alert-danger mt-4" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> Vui lòng kiểm tra lại thông tin vừa nhập.
                         </div>
                     }
                 </div>
             </div>
 
             <!-- Accordion Tips -->
-            <div class="accordion mt-4" id="tipsAccordion">
-                <div class="accordion-item bg-dark text-white border-0">
+            <div class="accordion mt-5 rounded-4 overflow-hidden" id="tipsAccordion">
+                <div class="accordion-item bg-dark text-white border border-secondary">
                     <h2 class="accordion-header" id="headingTips">
-                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTips" aria-expanded="false" aria-controls="collapseTips">
-                            <i class="bi bi-lightbulb-fill me-2"></i> Mẹo viết prompt chất
+                        <button class="accordion-button collapsed bg-dark text-white fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTips" aria-expanded="false" aria-controls="collapseTips">
+                            <i class="bi bi-lightbulb me-2"></i> Mẹo để viết prompt ấn tượng
                         </button>
                     </h2>
                     <div id="collapseTips" class="accordion-collapse collapse" aria-labelledby="headingTips" data-bs-parent="#tipsAccordion">
                         <div class="accordion-body">
-                            <ul>
-                                <li>Chỉ rõ phong cách (ví dụ: <em>cyberpunk</em>, <em>oil painting</em>).</li>
-                                <li>Mô tả chi tiết ánh sáng, màu sắc, góc nhìn.</li>
-                                <li>Đưa vào cảm xúc hoặc bối cảnh (ví dụ: <em>mùa đông buồn</em>).</li>
-                                <li>Giới hạn các chi tiết dư thừa để tránh noise.</li>
+                            <ul class="mb-0">
+                                <li><strong>Phong cách:</strong> ví dụ <em>cyberpunk</em>, <em>tranh sơn dầu</em></li>
+                                <li><strong>Chi tiết:</strong> ánh sáng, màu sắc, góc nhìn</li>
+                                <li><strong>Bối cảnh/cảm xúc:</strong> ví dụ <em>mùa đông buồn</em>, <em>huyền bí</em></li>
+                                <li><strong>Hạn chế noise:</strong> tránh mô tả quá dài dòng</li>
                             </ul>
                         </div>
                     </div>
@@ -71,16 +71,16 @@
 
         <!-- Sidebar: Ví dụ prompt -->
         <div class="col-lg-4">
-            <div class="card bg-dark border-0 shadow-sm h-100">
-                <div class="card-header bg-secondary text-white">
-                    <i class="bi bi-list-check me-2"></i> Ví dụ prompt mẫu
+            <div class="card bg-dark border-0 shadow-lg rounded-4 h-100">
+                <div class="card-header bg-secondary text-white fw-bold">
+                    <i class="bi bi-lightning-charge me-2"></i> Prompt mẫu siêu nhanh
                 </div>
-                <div class="card-body">
-                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Chân dung nữ hacker trong phòng neon cyberpunk">1. Hacker neon</button>
-                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Phong cảnh núi non hùng vĩ dưới bình minh">2. Núi bình minh</button>
-                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Thiết kế poster concert ban nhạc rock retro">3. Poster rock</button>
-                    <button class="btn btn-outline-light btn-sm mb-2 prompt-example" data-prompt="Nền vũ trụ với các hành tinh màu tím và sao băng">4. Vũ trụ tím</button>
-                    <small class="text-muted">Click để tự động điền vào ô mô tả.</small>
+                <div class="card-body d-grid gap-2">
+                    <button class="btn btn-outline-info rounded-pill prompt-example" data-prompt="Chân dung nữ hacker trong phòng neon cyberpunk">🎯 Hacker neon</button>
+                    <button class="btn btn-outline-info rounded-pill prompt-example" data-prompt="Phong cảnh núi non hùng vĩ dưới bình minh">🌄 Núi bình minh</button>
+                    <button class="btn btn-outline-info rounded-pill prompt-example" data-prompt="Thiết kế poster concert ban nhạc rock retro">🎸 Poster rock</button>
+                    <button class="btn btn-outline-info rounded-pill prompt-example" data-prompt="Nền vũ trụ với các hành tinh màu tím và sao băng">🪐 Vũ trụ tím</button>
+                    <small class="text-muted mt-2">Nhấn để tự động điền prompt vào ô mô tả</small>
                 </div>
             </div>
         </div>
@@ -89,27 +89,19 @@
 
 @section Scripts {
     <script>
-        // Spinner khi submit
-        document.getElementById("generateForm").addEventListener("submit", function () {
-            var btn = document.getElementById("submitBtn");
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Đang tạo...';
-        });
+                // Spinner khi submit
+                document.getElementById("generateForm").addEventListener("submit", function () {
+                    var btn = document.getElementById("submitBtn");
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Đang tạo...';
+                });
 
-        // Điền prompt mẫu
-        document.querySelectorAll(".prompt-example").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                document.getElementById("prompt").value = this.getAttribute("data-prompt");
-            });
-        });
+                // Điền prompt mẫu
+                document.querySelectorAll(".prompt-example").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        document.getElementById("prompt").value = this.getAttribute("data-prompt");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                });
     </script>
-
-@* Nếu muốn bật dịch tự động, giải nén đoạn dưới *@
-@*
-        <script>
-            document.querySelector('form').addEventListener('submit', async function (e) {
-                // ...
-            });
-        </script>
-        *@
 }
