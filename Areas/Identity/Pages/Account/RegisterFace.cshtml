@@ -1,0 +1,18 @@
+﻿@page
+@model RegisterFaceModel
+@{
+    ViewData["Title"] = "Đăng ký khuôn mặt";
+}
+<h2>Đăng ký khuôn mặt</h2>
+
+<video id="video" width="320" autoplay muted></video>
+<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+<p id="status">Đang tải...</p>
+<p id="result" style="color:green;"></p>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="~/js/register-face.js"></script>
+}
+

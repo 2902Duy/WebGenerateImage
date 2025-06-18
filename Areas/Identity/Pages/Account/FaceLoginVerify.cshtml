@@ -1,0 +1,15 @@
+﻿@page
+@model FaceLoginVerifyModel
+@{
+    ViewData["Title"] = "Xác thực đăng nhập bằng khuôn mặt";
+}
+<video id="video" width="320" height="240" autoplay muted></video>
+<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+<p id="status">Đang tải model...</p>
+<p id="result"></p>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="~/js/login-face.js"></script>
+}
+

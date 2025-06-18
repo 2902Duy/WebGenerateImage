@@ -24,12 +24,14 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager; // Cần thêm UserManager để tạo user mới nếu chưa có
         private readonly ILogger<LoginModel> _logger;
+        private readonly AppDbContext _context;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<LoginModel> logger, AppDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -113,14 +115,33 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // Kiểm tra đăng nhập
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Tài khoản không tồn tại.");
+                    return Page();
+                }
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    // Kiểm tra bật xác thực khuôn mặt
+                    var faceAuth = _context.FaceAuthentications.FirstOrDefault(f => f.UserId == user.Id);
+                    if (faceAuth?.IsFaceAuth == true &&faceAuth?.IsFaceVerified==true)
+                    {
+
+                        TempData["FaceLoginUserId"] = user.Id;
+                        TempData["ReturnUrl"] = returnUrl;
+                        return RedirectToPage("./FaceLoginVerify");
+                    }
+
+                    // Không bật xác thực khuôn mặt → đăng nhập luôn
+                    await _signInManager.SignInAsync(user, isPersistent: Input.RememberMe);
+                    _logger.LogInformation("User logged in (no face auth).");
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
@@ -130,16 +151,15 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+
+                ModelState.AddModelError(string.Empty, "Đăng nhập không hợp lệ.");
             }
 
-            // If we got this far, something failed, redisplay form
+            // Nếu ModelState không hợp lệ hoặc lỗi khác
             return Page();
         }
+    
+
 
         public IActionResult OnPostExternalLogin(string provider, string returnUrl = null)
         {
@@ -155,7 +175,7 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
 
             if (remoteError != null)
             {
-                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                ModelState.AddModelError(string.Empty, $"Lỗi từ nhà cung cấp: {remoteError}");
                 return Page();
             }
 
@@ -165,44 +185,47 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login");
             }
 
-            // Thử đăng nhập với external login info
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-            if (result.Succeeded)
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (email == null)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return LocalRedirect(returnUrl);
-            }
-            if (result.IsLockedOut)
-            {
-                return RedirectToPage("./Lockout");
-            }
-            else
-            {
-                // Nếu user chưa có trong hệ thống, tạo tài khoản mới
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                if (email != null)
-                {
-                    var user = new IdentityUser { UserName = email, Email = email };
-                    var createResult = await _userManager.CreateAsync(user);
-                    if (createResult.Succeeded)
-                    {
-                        createResult = await _userManager.AddLoginAsync(user, info);
-                        if (createResult.Succeeded)
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                            return LocalRedirect(returnUrl);
-                        }
-                    }
-                    foreach (var error in createResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-
-                ModelState.AddModelError(string.Empty, "Error loading external login information.");
+                ModelState.AddModelError(string.Empty, "Không lấy được email từ tài khoản ngoài.");
                 return Page();
             }
+
+            // Tìm hoặc tạo user
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new IdentityUser { UserName = email, Email = email };
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    foreach (var error in createResult.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    return Page();
+                }
+
+                var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                if (!addLoginResult.Succeeded)
+                {
+                    foreach (var error in addLoginResult.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    return Page();
+                }
+            }
+
+            var faceAuth = _context.FaceAuthentications.FirstOrDefault(f => f.UserId == user.Id);
+            if (faceAuth?.IsFaceAuth == true)
+            {
+                TempData["FaceLoginUserId"] = user.Id;
+                TempData["ReturnUrl"] = returnUrl;
+                return RedirectToPage("./FaceLoginVerify");
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
         }
+
+
     }
 }

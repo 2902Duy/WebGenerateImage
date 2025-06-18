@@ -1,0 +1,13 @@
+﻿@page
+@model LoginFaceFailModel
+@{
+    ViewData["Title"] = "Đăng nhập bằng khuôn mặt thất bại";
+}
+
+<div class="alert alert-danger mt-4">
+    <h4 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Lỗi xác thực!</h4>
+    <p>@TempData["Error"]</p>
+    <p>
+        <a asp-page="/Account/Login" asp-area="Identity">quay lại đăng nhập</a>
+    </p>
+</div>
