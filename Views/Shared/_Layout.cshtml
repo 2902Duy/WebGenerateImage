@@ -2,29 +2,55 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - AIImageWeb</title>
 
-    <!-- Bootstrap + custom dark mode -->
+    <!-- Bootstrap + custom styles -->
     <link rel="stylesheet" href="~/css/site.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
 
     <style>
+        /* Cho body và html full chiều cao, dùng flex layout để đẩy footer xuống đáy */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
         body {
+            display: flex;
+            flex-direction: column;
             background-color: #000;
             color: #fff;
             font-family: 'Poppins', sans-serif;
+        }
+        /* Header luôn sticky */
+        header.sticky-top {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+        /* Main kéo dài đẩy footer xuống */
+        main {
+            flex: 1 0 auto;
+        }
+        /* Footer không co lại */
+        footer {
+            flex-shrink: 0;
         }
 
         a, .text-primary, .btn-link {
             color: #0dcaf0;
         }
 
+        .nav-link:hover {
+            color: #0dcaf0 !important;
+        }
+
         .form-control {
             background-color: #1a1a1a;
-            color: white;
+            color: #fff;
             border: 1px solid #444;
         }
 
@@ -34,7 +60,7 @@
 
         .card {
             background-color: #1e1e1e;
-            color: white;
+            color: #fff;
             border: 1px solid #333;
             transition: transform 0.3s ease;
         }
@@ -58,7 +84,6 @@
             border-color: #198754;
         }
 
-        /* Particles background container */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -70,60 +95,87 @@
     </style>
 </head>
 <body>
-    <!-- Particles.js nền -->
+    <!-- Particles.js background -->
     <div id="particles-js"></div>
 
-    <!-- Header responsive -->
-    <header style="position: relative; z-index: 2;">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="/images/imageweb/logo.jpg" alt="Logo" style="height: 40px; margin-right: 10px;">
-                <span class="fs-5 fw-bold">AIImageWeb</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <!-- ========== HEADER / NAVBAR ========== -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container-fluid px-4">
+                <!-- Logo + Site name -->
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="/images/imageweb/logo.jpg" alt="Logo" height="40" class="me-2" />
+                    <span class="fs-5 fw-bold">AIImageWeb</span>
+                </a>
 
-            <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/image" class="nav-link">Tạo ảnh từ AI</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/Image/MyLibrary" class="nav-link">Thư viện</a>
-                    </li>
-                    <li class="nav-item">
+                <!-- Mobile toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Nav links + Login/User -->
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/image" class="nav-link">Tạo ảnh từ AI</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Image/MyLibrary" class="nav-link">Thư viện</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <div class="mt-4 text-light">
-                                <p>👋 Xin chào, <strong>@User.Identity.Name</strong></p>
-                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Đăng xuất</button>
-                                </form>
+                            <div class="dropdown">
+                                <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                                   href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle fs-4 me-1"></i>
+                                    <span>@User.Identity.Name</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center"
+                                           asp-area="Identity" asp-page="/Account/Manage/Index">
+                                            <i class="bi bi-gear me-2"></i>
+                                            Hồ sơ của tôi
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-area="Identity" asp-page="/Account/Logout"
+                                              asp-route-returnUrl="/" method="post" class="px-3 py-2">
+                                            <button type="submit" class="btn btn-outline-danger w-100">
+                                                Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
                         }
                         else
                         {
-                            <!-- Nút đăng nhập -->
-                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg mt-3 px-4 py-2 fw-semibold">
+                            <a asp-area="Identity" asp-page="/Account/Login"
+                               class="btn btn-primary ms-3 px-4 py-2">
                                 Đăng nhập
                             </a>
                         }
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
 
-    <!-- Nội dung chính -->
+    <!-- Main content -->
     <main class="container py-4" style="position: relative; z-index: 1;">
         @RenderBody()
     </main>
 
+    <!-- Footer -->
     <footer class="text-center py-3 border-top" style="position: relative; z-index: 1;">
         &copy; 2025 - AIImageWeb
     </footer>
@@ -136,7 +188,7 @@
         });
     </script>
 
-    <!-- Bootstrap JS (required for menu toggle) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)

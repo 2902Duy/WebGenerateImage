@@ -4,10 +4,18 @@
     ViewData["Title"] = "Đăng nhập bằng khuôn mặt thất bại";
 }
 
-<div class="alert alert-danger mt-4">
-    <h4 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Lỗi xác thực!</h4>
-    <p>@TempData["Error"]</p>
-    <p>
-        <a asp-page="/Account/Login" asp-area="Identity">quay lại đăng nhập</a>
-    </p>
-</div>
+<section class="d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="card bg-dark text-white shadow-lg" style="max-width: 480px; width: 100%;">
+        <div class="card-body text-center p-5">
+            <div class="mb-4">
+                <i class="bi bi-x-circle-fill display-1 text-danger"></i>
+            </div>
+            <h3 class="card-title text-danger mb-3">Đăng nhập thất bại</h3>
+            <p class="card-text mb-4">@TempData["Error"]</p>
+            <a asp-page="/Account/Login" asp-area="Identity"
+               class="btn btn-primary px-4 py-2">
+                Quay lại trang đăng nhập
+            </a>
+        </div>
+    </div>
+</section>

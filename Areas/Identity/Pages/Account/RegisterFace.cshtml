@@ -3,16 +3,45 @@
 @{
     ViewData["Title"] = "Đăng ký khuôn mặt";
 }
-<h2>Đăng ký khuôn mặt</h2>
 
-<video id="video" width="320" autoplay muted></video>
-<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Đăng ký khuôn mặt</h2>
 
-<p id="status">Đang tải...</p>
-<p id="result" style="color:green;"></p>
+                    <div class="text-center mb-3">
+                        <video id="video"
+                               class="rounded"
+                               width="320"
+                               height="240"
+                               autoplay
+                               muted
+                               style="border: 2px solid #444;"></video>
+                        <canvas id="canvas"
+                                width="320"
+                                height="240"
+                                class="d-none"></canvas>
+                    </div>
+
+                    <div id="status" class="d-flex justify-content-center align-items-center mb-3">
+                        <div class="spinner-border text-info" role="status">
+                            <span class="visually-hidden">Đang tải…</span>
+                        </div>
+                        <span class="ms-2">Đang tải…</span>
+                    </div>
+
+                    <div id="result" class="alert alert-success d-none text-center" role="alert">
+                        <!-- Kết quả sẽ được script ghi vào đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <script src="~/js/register-face.js"></script>
 }
-

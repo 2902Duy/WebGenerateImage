@@ -3,13 +3,44 @@
 @{
     ViewData["Title"] = "Xác thực đăng nhập bằng khuôn mặt";
 }
-<video id="video" width="320" height="240" autoplay muted></video>
-<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-<p id="status">Đang tải model...</p>
-<p id="result"></p>
+
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white shadow-lg">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">Xác thực đăng nhập bằng khuôn mặt</h2>
+
+                    <div class="mb-3">
+                        <video id="video"
+                               class="rounded border border-secondary"
+                               width="320"
+                               height="240"
+                               autoplay
+                               muted></video>
+                        <canvas id="canvas"
+                                width="320"
+                                height="240"
+                                class="d-none"></canvas>
+                    </div>
+
+                    <div id="status" class="d-flex justify-content-center align-items-center mb-3">
+                        <div class="spinner-border text-info me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span>Đang tải model...</span>
+                    </div>
+
+                    <div id="result" class="alert alert-info d-none" role="alert">
+                        <!-- Kết quả sẽ hiển thị ở đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <script src="~/js/login-face.js"></script>
 }
-

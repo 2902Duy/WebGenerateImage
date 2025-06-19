@@ -2,16 +2,36 @@
     ViewData["Title"] = "So sánh ảnh";
 }
 
-<h2>So sánh ảnh gốc và ảnh sau khi tạo</h2>
-<p>Image Strength: @ViewBag.Strength</p>
+<section class="container py-5">
+    <h2 class="text-center mb-4">So sánh ảnh gốc và ảnh sau khi tạo</h2>
 
-<div style="display: flex; gap: 40px;">
-    <div>
-        <h4>Ảnh Gốc</h4>
-        <img src="@ViewBag.OriginalImage" style="max-width: 400px; border: 1px solid gray;" />
+    <div class="text-center mb-5">
+        <span class="badge bg-info fs-6">Image Strength: @ViewBag.Strength</span>
     </div>
-    <div>
-        <h4>Ảnh Đã Tạo</h4>
-        <img src="@ViewBag.GeneratedImage" style="max-width: 400px; border: 1px solid gray;" />
+
+    <div class="row gy-4">
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="card bg-dark border-secondary shadow-sm" style="width: 100%; max-width: 420px;">
+                <div class="card-header text-center text-white">
+                    Ảnh Gốc
+                </div>
+                <img src="@ViewBag.OriginalImage"
+                     alt="Ảnh Gốc"
+                     class="card-img-bottom img-fluid rounded"
+                     style="border-top: 1px solid #444;" />
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="card bg-dark border-secondary shadow-sm" style="width: 100%; max-width: 420px;">
+                <div class="card-header text-center text-white">
+                    Ảnh Đã Tạo
+                </div>
+                <img src="@ViewBag.GeneratedImage"
+                     alt="Ảnh Đã Tạo"
+                     class="card-img-bottom img-fluid rounded"
+                     style="border-top: 1px solid #444;" />
+            </div>
+        </div>
     </div>
-</div>
+</section>
