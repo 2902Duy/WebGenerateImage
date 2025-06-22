@@ -38,7 +38,7 @@
             </div>
 
             <div class="mb-3">
-                <button type="submit" formaction="/Identity/Account/Register?handler=SendOtp" formmethod="post" class="btn btn-secondary">Gửi mã OTP</button>
+                <button type="button" id="sendOtpButton" class="btn btn-secondary">Gửi mã OTP</button>
             </div>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
@@ -76,4 +76,32 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('sendOtpButton').addEventListener('click', async function () {
+            const email = document.querySelector('#Input_Email').value;
+            if (!email) {
+                alert('Vui lòng nhập email trước khi gửi mã OTP');
+                return;
+            }
+
+            try {
+                const response = await fetch('/Identity/Account/Register?handler=SendOtp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: `email=${encodeURIComponent(email)}`
+                });
+
+                if (response.ok) {
+                    alert('Mã OTP đã được gửi đến email của bạn');
+                } else {
+                    alert('Có lỗi xảy ra khi gửi mã OTP');
+                }
+            } catch (error) {
+                alert('Có lỗi xảy ra khi gửi mã OTP');
+            }
+        });
+    </script>
 }
