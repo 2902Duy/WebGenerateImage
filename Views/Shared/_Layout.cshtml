@@ -205,8 +205,19 @@
             <!-- Hero nội dung chính -->
             <div class="hero-content text-center text-white">
                 <h1>Tạo ảnh AI online miễn phí:<br />Biến văn bản thành hình ảnh</h1>
-                <p class="mt-3">Trực tuyến trong vài giây - không quảng cáo, không giới hạn!</p>
-                <a href="/image" class="btn btn-primary btn-lg mt-4">Tạo ảnh AI ngay bây giờ</a>
+                <p class="mt-3">Trực tuyến trong vài giây – không quảng cáo, không giới hạn!</p>
+                <div class="mt-4 d-flex justify-content-center gap-3">
+                    <!-- Nút nền đầy màu xanh lá -->
+                    <a asp-controller="Image" asp-action="Index"
+                       class="btn btn-success btn-lg">
+                        Tạo ảnh từ AI
+                    </a>
+                    <!-- Nút outline cùng tông xanh lá -->
+                    <a asp-controller="Image" asp-action="Upload"
+                       class="btn btn-success btn-lg">
+                        Sáng tạo ảnh AI với chúng tôi
+                    </a>
+                </div>
             </div>
         </section>
     }
