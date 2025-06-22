@@ -148,8 +148,10 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             if (string.IsNullOrWhiteSpace(Input?.Email))
             {
                 ModelState.AddModelError(string.Empty, "Email không hợp lệ.");
+
                 return Page();
             }
+            ModelState.Remove("Input.OtpCode");
 
             var existingUser = await _userManager.FindByEmailAsync(Input.Email);
             if (existingUser != null)
@@ -171,7 +173,7 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             await _context.SaveChangesAsync();
 
             await _emailService.SendOtpAsync(Input.Email, otpCode);
-            ModelState.AddModelError(string.Empty, "Mã OTP đã được gửi đến email.");
+            TempData["OtpSent"] = "Mã OTP đã được gửi đến email.";
             return Page();
         }
 

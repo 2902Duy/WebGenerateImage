@@ -4,104 +4,125 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    .form-container {
+        background: rgba(0, 0, 0, 0.6);
+    }
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Tạo tài khoản mới</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        .form-container .form-control {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #17c3b2;
+        }
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
+            .form-container .form-control::placeholder {
+                color: rgba(255,255,255,0.6);
+            }
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
+        .form-container .form-floating label {
+            color: rgba(255,255,255,0.6);
+        }
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="confirm password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
+    .btn-otp {
+        color: #17c3b2;
+        border-color: #17c3b2;
+        background: transparent;
+    }
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.OtpCode" class="form-control" placeholder="Enter OTP" />
-                <label asp-for="Input.OtpCode">Mã OTP</label>
-                <span asp-validation-for="Input.OtpCode" class="text-danger"></span>
-            </div>
+        .btn-otp:hover {
+            background: #17c3b2;
+            color: #000;
+        }
 
-            <div class="mb-3">
-                <button type="button" id="sendOtpButton" class="btn btn-secondary">Gửi mã OTP</button>
-            </div>
+    .btn-register {
+        background: #17c3b2;
+        border-color: #17c3b2;
+        color: #000;
+    }
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
-        </form>
+        .btn-register:hover {
+            background: #13a79e;
+        }
+</style>
+
+<h1 class="text-white text-center mb-4">@ViewData["Title"]</h1>
+
+@if (TempData["OtpSent"] != null)
+{
+    <div class="alert alert-success text-center mb-4">
+        @TempData["OtpSent"]
+    </div>
+}
+<form id="registerForm"
+      asp-route-returnUrl="@Model.ReturnUrl"
+      method="post"
+      class="mx-auto p-5 rounded-4 shadow form-container"
+      style="max-width: 400px;">
+
+    <h2 class="h5 text-white text-center mb-4">Tạo tài khoản mới</h2>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Email"
+               class="form-control rounded-pill"
+               autocomplete="username"
+               placeholder="email@example.com" />
+        <label asp-for="Input.Email">Email</label>
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
 
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Đăng ký bằng dịch vụ bên ngoài</h3>
-            <hr />
-            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
-            {
-                <div>
-                    <p>Chưa cấu hình dịch vụ đăng nhập bên ngoài. <a href="https://go.microsoft.com/fwlink/?LinkID=532715">Tìm hiểu cách tích hợp</a>.</p>
-                </div>
-            }
-            else
-            {
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                    <div>
-                        <p>
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name">
-                                    @provider.DisplayName
-                                </button>
-                            }
-                        </p>
-                    </div>
-                </form>
-            }
-        </section>
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Password"
+               type="password"
+               class="form-control rounded-pill"
+               autocomplete="new-password"
+               placeholder="Password"
+               value="@(Model.Input?.Password ?? "")" />
+        <label asp-for="Input.Password">Password</label>
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
     </div>
-</div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.ConfirmPassword"
+               type="password"
+               class="form-control rounded-pill"
+               autocomplete="new-password"
+               placeholder="Confirm Password"
+               value="@(Model.Input?.ConfirmPassword ?? "")" />
+        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-floating mb-4">
+        <input asp-for="Input.OtpCode"
+               class="form-control rounded-pill"
+               placeholder="Mã OTP" />
+        <label asp-for="Input.OtpCode">Mã OTP</label>
+        <span asp-validation-for="Input.OtpCode" class="text-danger"></span>
+    </div>
+
+    <div class="d-grid gap-2 mb-3">
+        <button type="submit"
+                formaction="/Identity/Account/Register?handler=SendOtp"
+                formmethod="post"
+                formnovalidate
+                class="btn btn-outline-light btn-otp rounded-pill py-2">
+            Gửi mã OTP
+        </button>
+    </div>
+
+
+    <div class="d-grid">
+        <button id="registerSubmit"
+                type="submit"
+                class="btn btn-register rounded-pill py-2">
+            Đăng ký
+        </button>
+    </div>
+
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        document.getElementById('sendOtpButton').addEventListener('click', async function () {
-            const email = document.querySelector('#Input_Email').value;
-            if (!email) {
-                alert('Vui lòng nhập email trước khi gửi mã OTP');
-                return;
-            }
-
-            try {
-                const response = await fetch('/Identity/Account/Register?handler=SendOtp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: `email=${encodeURIComponent(email)}`
-                });
-
-                if (response.ok) {
-                    alert('Mã OTP đã được gửi đến email của bạn');
-                } else {
-                    alert('Có lỗi xảy ra khi gửi mã OTP');
-                }
-            } catch (error) {
-                alert('Có lỗi xảy ra khi gửi mã OTP');
-            }
-        });
-    </script>
 }
