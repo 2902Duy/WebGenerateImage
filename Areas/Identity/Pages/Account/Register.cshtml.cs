@@ -1,17 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using WebGenerateImage.Data;
 using WebGenerateImage.Models;
 using WebGenerateImage.Services;
@@ -28,6 +29,7 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly AppDbContext _context;
         private readonly EmailService _emailService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -35,7 +37,8 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             AppDbContext context,
-            EmailService emailService)
+            EmailService emailService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             _logger = logger;
             _context = context;
             _emailService = emailService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [BindProperty]
@@ -123,7 +127,8 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
 
                 // Gán role mặc định nếu cần
                 await _userManager.AddToRoleAsync(user, "User");
-
+                // Tạo thư mục cho người dùng mới
+                CreateUserDirectory(user.Id);
                 // Xoá mã OTP đã dùng
                 _context.OtpCodes.RemoveRange(_context.OtpCodes.Where(o => o.Email == Input.Email));
                 await _context.SaveChangesAsync();
@@ -187,6 +192,18 @@ namespace WebGenerateImage.Areas.Identity.Pages.Account
             if (!_userManager.SupportsUserEmail)
                 throw new NotSupportedException("UserManager hiện tại không hỗ trợ email.");
             return (IUserEmailStore<IdentityUser>)_userStore;
+        }
+        private void CreateUserDirectory(string userId)
+        {
+            var userFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Users", userId);
+            var promptFolder = Path.Combine(userFolder, "ImagePrompt");
+            var imageToImageFolder = Path.Combine(userFolder, "ImageToImage");
+
+            if (!Directory.Exists(userFolder))
+            {
+                Directory.CreateDirectory(promptFolder);
+                Directory.CreateDirectory(imageToImageFolder);
+            }
         }
     }
 }
