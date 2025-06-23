@@ -109,47 +109,82 @@ public class ImageController : Controller
         return View();
     }
 
-    public static Stream ResizeImage(Stream inputStream, int width, int height)
+    public Stream ResizeImage(Stream inputStream, int width, int height)
     {
-        using var image = Image.FromStream(inputStream);
-        var resized = new Bitmap(width, height);
-        using var g = Graphics.FromImage(resized);
-        g.DrawImage(image, 0, 0, width, height);
-
-        var outputStream = new MemoryStream();
-        resized.Save(outputStream, ImageFormat.Png);
-        outputStream.Position = 0;
-        return outputStream;
-    }
-    [HttpPost]
-    public async Task<IActionResult> Transformation(IFormFile initImage, string imageStrength)
-    {
-
-
         try
         {
-            if (initImage == null || initImage.Length == 0)
-                return BadRequest("Không có ảnh.");
-            var resizedStream = ResizeImage(initImage.OpenReadStream(), 1024, 1024);
+            using var image = System.Drawing.Image.FromStream(inputStream);
+            var resized = new Bitmap(width, height);
+            using var graphics = Graphics.FromImage(resized);
+            graphics.DrawImage(image, 0, 0, width, height);
 
+            var outputStream = new MemoryStream();
+            resized.Save(outputStream, ImageFormat.Png);
+            outputStream.Position = 0;
+            return outputStream;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Lỗi resize ảnh: " + ex.Message);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Transformation(IFormFile initImage, string imageStrength, string existingImagePath)
+    {
+        try
+        {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            // Lưu bản gốc (chưa resize) nếu cần
-            var originalFileName = $"original_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
-            var originalPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", originalFileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(originalPath)!);
-            using (var fileStream = new FileStream(originalPath, FileMode.Create))
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không xác định được người dùng.");
+
+            string originalFileName;
+            Stream imageInputStream;
+
+            // === 1. Xử lý ảnh gốc ===
+            if (initImage != null && initImage.Length > 0)
             {
-                await initImage.CopyToAsync(fileStream);
+                using var memoryStream = new MemoryStream();
+                await initImage.CopyToAsync(memoryStream);
+                var imageBytes = memoryStream.ToArray();
+
+                // Lưu ảnh gốc
+                originalFileName = $"original_{Guid.NewGuid():N}.png";
+                var originalPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", originalFileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(originalPath)!);
+                await System.IO.File.WriteAllBytesAsync(originalPath, imageBytes);
+
+                imageInputStream = new MemoryStream(imageBytes);
+            }
+            else if (!string.IsNullOrEmpty(existingImagePath))
+            {
+                var fullPath = Path.Combine("wwwroot", existingImagePath.TrimStart('/'));
+                if (!System.IO.File.Exists(fullPath))
+                    return BadRequest("Ảnh đã có không tồn tại.");
+                var imageBytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+                originalFileName = $"original_{Guid.NewGuid():N}.png";
+                var originalPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", originalFileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(originalPath)!);
+
+                await System.IO.File.WriteAllBytesAsync(originalPath, imageBytes);
+
+                imageInputStream = new MemoryStream(imageBytes);
+            }
+            else
+            {
+                return BadRequest("Không có ảnh.");
             }
 
-            // Gửi ảnh resized lên API
+            // === 2. Resize ảnh ===
+            var resizedStream = ResizeImage(imageInputStream, 1024, 1024);
+
+            // === 3. Gửi ảnh lên API tạo ảnh mới ===
             var client = _clientFactory.CreateClient();
             var requestContent = new MultipartFormDataContent();
 
             var imageContent = new StreamContent(resizedStream);
             imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
             requestContent.Add(imageContent, "init_image", "init.png");
-
             requestContent.Add(new StringContent("original style"), "text_prompts[0][text]");
             requestContent.Add(new StringContent("2"), "cfg_scale");
             requestContent.Add(new StringContent("FAST_BLUE"), "clip_guidance_preset");
@@ -171,13 +206,13 @@ public class ImageController : Controller
             var json = await response.Content.ReadAsStringAsync();
             var data = JsonDocument.Parse(json);
 
-
             var base64 = data.RootElement.GetProperty("artifacts")[0].GetProperty("base64").GetString();
             var bytes = Convert.FromBase64String(base64);
-            var outputFileName = $"generated_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
+            var outputFileName = $"generated_{Guid.NewGuid():N}.png";
             var outputPath = Path.Combine($"wwwroot/images/Users/{userId}/ImageToImage", outputFileName);
             await System.IO.File.WriteAllBytesAsync(outputPath, bytes);
 
+            // === 4. Lưu DB ===
             var record = new ImageToImage
             {
                 imagePathOrigin = $"/images/Users/{userId}/ImageToImage/{originalFileName}",
@@ -190,8 +225,9 @@ public class ImageController : Controller
             _context.ImageToImages.Add(record);
             await _context.SaveChangesAsync();
 
-            ViewBag.OriginalImage = $"/images/Users/{userId}/ImageToImage/{originalFileName}";
-            ViewBag.GeneratedImage = $"/images/Users/{userId}/ImageToImage/{outputFileName}";
+            // === 5. Trả lại view với dữ liệu ảnh ===
+            ViewBag.OriginalImage = record.imagePathOrigin;
+            ViewBag.GeneratedImage = record.imagePathGenerate;
             ViewBag.Strength = imageStrength;
 
             return View("Transformation");
@@ -200,8 +236,9 @@ public class ImageController : Controller
         {
             return Content($"Đã xảy ra lỗi: {ex.Message}");
         }
-        return View("Upload");
     }
+
+
     [HttpGet]
     public IActionResult Delete(string imageUrl)
     {
@@ -261,6 +298,15 @@ public class ImageController : Controller
         var allImages = promptImages.Concat(imageToImageImages).ToList();
 
         return View(allImages);
+    }
+
+
+    [HttpPost]
+    public IActionResult ContinueWithImage(string imagePath)
+    {
+        // Gửi đường dẫn ảnh sang View để hiển thị sẵn ảnh nguồn
+        ViewBag.ExistingImage = imagePath;
+        return View("Upload");
     }
 
 

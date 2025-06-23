@@ -11,19 +11,29 @@
                 </div>
                 <div class="card-body">
                     <form asp-controller="Image" asp-action="Transformation" method="post" enctype="multipart/form-data">
+                        @if (ViewBag.ExistingImage != null)
+                        {
+                            <input type="hidden" name="existingImagePath" value="@ViewBag.ExistingImage" />
+                        }
+
                         <div class="row g-4">
-                            <!-- File input + Preview -->
-                            <div class="col-md-6">
-                                <label for="initImage" class="form-label">Chọn ảnh nguồn</label>
-                                <input type="file"
-                                       id="initImage"
-                                       name="initImage"
-                                       accept="image/*"
-                                       class="form-control form-control-dark"
-                                       required
-                                       onchange="previewImage(event)" />
-                            </div>
-                            <div class="col-md-6 text-center">
+                            <!-- File input -->
+                            @if (ViewBag.ExistingImage == null)
+                            {
+                                <div class="col-md-6">
+                                    <label for="initImage" class="form-label">Chọn ảnh nguồn</label>
+                                    <input type="file"
+                                           id="initImage"
+                                           name="initImage"
+                                           accept="image/*"
+                                           class="form-control form-control-dark"
+                                           onchange="previewImage(event)"
+                                           required />
+                                </div>
+                            }
+
+                            <!-- Preview ảnh -->
+                            <div class="@(ViewBag.ExistingImage == null ? "col-md-6" : "col-md-12") text-center">
                                 <img id="preview"
                                      src=""
                                      alt="Preview"
@@ -31,7 +41,7 @@
                                      style="max-height: 200px; object-fit: contain;" />
                             </div>
 
-                            <!-- Strength slider -->
+                            <!-- Slider chỉnh hiệu ứng -->
                             <div class="col-12">
                                 <label for="imageStrength" class="form-label">
                                     Độ mạnh hiệu ứng: <strong><span id="strengthValue">0.35</span></strong>
@@ -47,7 +57,7 @@
                                        oninput="document.getElementById('strengthValue').innerText = this.value" />
                             </div>
 
-                            <!-- Submit button -->
+                            <!-- Nút tạo ảnh -->
                             <div class="col-12 text-center">
                                 <button type="submit"
                                         class="btn btn-success btn-lg px-5 py-2">
@@ -75,6 +85,17 @@
                 img.src = '';
                 img.classList.add('d-none');
             }
+        }
+
+        @if (ViewBag.ExistingImage != null)
+        {
+                <text>
+                window.addEventListener('DOMContentLoaded', () => {
+                    const img = document.getElementById('preview');
+                    img.src = '@ViewBag.ExistingImage';
+                    img.classList.remove('d-none');
+                });
+                </text>
         }
     </script>
 }

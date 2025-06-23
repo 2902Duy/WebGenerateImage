@@ -5,32 +5,36 @@
 <section class="container py-5">
     <h2 class="text-center mb-4">So sánh ảnh gốc và ảnh sau khi tạo</h2>
 
-    <div class="text-center mb-5">
+    <div class="text-center mb-4">
         <span class="badge bg-info fs-6">Image Strength: @ViewBag.Strength</span>
     </div>
 
-    <div class="row gy-4">
+    <div class="row gy-4 justify-content-center">
         <div class="col-md-6 d-flex justify-content-center">
-            <div class="card bg-dark border-secondary shadow-sm" style="width: 100%; max-width: 420px;">
-                <div class="card-header text-center text-white">
+            <div class="card bg-dark border-light shadow-sm w-100" style="max-width: 500px; min-height: 640px;">
+                <div class="card-header text-center text-white fw-semibold">
                     Ảnh Gốc
                 </div>
-                <img src="@ViewBag.OriginalImage"
-                     alt="Ảnh Gốc"
-                     class="card-img-bottom img-fluid rounded"
-                     style="border-top: 1px solid #444;" />
+                <div class="ratio ratio-4x3 bg-black d-flex align-items-center justify-content-center overflow-auto">
+                    <img src="@ViewBag.OriginalImage"
+                         alt="Ảnh Gốc"
+                         class="img-fluid rounded"
+                         style="max-height: 100%; object-fit: contain;" />
+                </div>
             </div>
         </div>
 
         <div class="col-md-6 d-flex justify-content-center">
-            <div class="card bg-dark border-secondary shadow-sm" style="width: 100%; max-width: 420px;">
-                <div class="card-header text-center text-white">
+            <div class="card bg-dark border-light shadow-sm w-100" style="max-width: 500px; min-height: 640px;">
+                <div class="card-header text-center text-white fw-semibold">
                     Ảnh Đã Tạo
                 </div>
-                <img src="@ViewBag.GeneratedImage"
-                     alt="Ảnh Đã Tạo"
-                     class="card-img-bottom img-fluid rounded"
-                     style="border-top: 1px solid #444;" />
+                <div class="ratio ratio-4x3 bg-black d-flex align-items-center justify-content-center overflow-auto">
+                    <img src="@ViewBag.GeneratedImage"
+                         alt="Ảnh Đã Tạo"
+                         class="img-fluid rounded"
+                         style="max-height: 100%; object-fit: contain;" />
+                </div>
             </div>
         </div>
     </div>
