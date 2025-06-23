@@ -5,46 +5,44 @@
 <section class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card bg-dark text-white shadow-lg">
-                <div class="card-header border-0 text-center">
-                    <h3 class="mb-0">Tạo ảnh mới từ ảnh upload</h3>
+            <div class="card bg-gradient-dark text-white shadow-lg rounded-4 border-0 overflow-hidden">
+                <div class="card-header bg-success text-center py-4">
+                    <h3 class="mb-0 fw-bold text-white">
+                        <i class="bi bi-upload me-2"></i>Tạo ảnh mới từ ảnh upload
+                    </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-5">
                     <form asp-controller="Image" asp-action="Transformation" method="post" enctype="multipart/form-data">
                         @if (ViewBag.ExistingImage != null)
                         {
                             <input type="hidden" name="existingImagePath" value="@ViewBag.ExistingImage" />
                         }
-
                         <div class="row g-4">
-                            <!-- File input -->
                             @if (ViewBag.ExistingImage == null)
                             {
                                 <div class="col-md-6">
-                                    <label for="initImage" class="form-label">Chọn ảnh nguồn</label>
-                                    <input type="file"
-                                           id="initImage"
-                                           name="initImage"
-                                           accept="image/*"
-                                           class="form-control form-control-dark"
-                                           onchange="previewImage(event)"
-                                           required />
+                                    <div class="mb-3">
+                                        <label for="initImage" class="form-label fw-semibold">Chọn ảnh nguồn</label>
+                                        <input type="file"
+                                               id="initImage"
+                                               name="initImage"
+                                               accept="image/*"
+                                               class="form-control form-control-lg bg-secondary bg-opacity-25 text-white border-0 rounded-3 shadow-sm"
+                                               onchange="previewImage(event)"
+                                               required />
+                                    </div>
                                 </div>
                             }
-
-                            <!-- Preview ảnh -->
-                            <div class="@(ViewBag.ExistingImage == null ? "col-md-6" : "col-md-12") text-center">
+                            <div class="@(ViewBag.ExistingImage == null ? "col-md-6" : "col-12") text-center">
                                 <img id="preview"
                                      src=""
                                      alt="Preview"
-                                     class="img-fluid rounded border d-none"
-                                     style="max-height: 200px; object-fit: contain;" />
+                                     class="img-fluid rounded-3 border border-secondary shadow-sm d-none"
+                                     style="max-height: 250px; object-fit: contain;" />
                             </div>
-
-                            <!-- Slider chỉnh hiệu ứng -->
                             <div class="col-12">
-                                <label for="imageStrength" class="form-label">
-                                    Độ mạnh hiệu ứng: <strong><span id="strengthValue">0.35</span></strong>
+                                <label for="imageStrength" class="form-label fw-semibold">
+                                    Độ mạnh hiệu ứng: <span id="strengthValue" class="badge bg-success">0.35</span>
                                 </label>
                                 <input type="range"
                                        id="imageStrength"
@@ -54,15 +52,11 @@
                                        max="1.0"
                                        step="0.01"
                                        value="0.35"
-                                       oninput="document.getElementById('strengthValue').innerText = this.value" />
+                                       oninput="strengthValue.innerText = this.value" />
                             </div>
-
-                            <!-- Nút tạo ảnh -->
                             <div class="col-12 text-center">
-                                <button type="submit"
-                                        class="btn btn-success btn-lg px-5 py-2">
-                                    <i class="bi bi-image me-2"></i>
-                                    Tạo ảnh
+                                <button type="submit" class="btn btn-success btn-lg px-5 py-2 rounded-pill shadow-lg">
+                                    <i class="bi bi-image me-2"></i>Tạo ảnh
                                 </button>
                             </div>
                         </div>
@@ -89,13 +83,27 @@
 
         @if (ViewBag.ExistingImage != null)
         {
-                <text>
-                window.addEventListener('DOMContentLoaded', () => {
+            <text>
+                document.addEventListener('DOMContentLoaded', () => {
                     const img = document.getElementById('preview');
                     img.src = '@ViewBag.ExistingImage';
                     img.classList.remove('d-none');
                 });
-                </text>
+            </text>
         }
     </script>
 }
+
+<style>
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, #1a1a2e, #16213e) !important;
+    }
+
+    .form-control-lg:focus {
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25) !important;
+    }
+
+    .badge {
+        font-size: 1rem;
+    }
+</style>

@@ -2,53 +2,89 @@
 @{
     ViewData["Title"] = "Thư viện ảnh";
 }
-<section class="container py-5">
-    <h2 class="mb-4 text-center text-white">@ViewData["Title"]</h2>
-    <div class="row g-4">
+
+
+<section class="container py-5 gallery">
+    <h2 class="mb-5 text-center text-white display-4">@ViewData["Title"]</h2>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
         @foreach (var url in Model)
         {
             var isImageToImage = url.Contains("ImageToImage");
             var isFromPrompt = url.Contains("ImagePrompt");
+            <div class="col">
+                <div class="card bg-transparent border-0 shadow-sm gallery-item h-100 overflow-hidden">
+                    <div class="position-relative">
+                        <img src="@url"
+                             class="card-img-top img-fluid"
+                             alt="Ảnh mẫu"
+                             style="object-fit: cover; height:200px; border-radius: .25rem;" />
 
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                <div class="card bg-dark text-white h-100 shadow-sm">
-                    <img src="@url"
-                         class="card-img-top img-fluid"
-                         alt="Ảnh mẫu"
-                         style="object-fit: cover; height: 200px;" />
-                    <div class="card-body d-flex flex-column align-items-center gap-2">
-                        <a href="@url"
-                           download
-                           class="btn btn-primary btn-sm d-flex align-items-center w-100 justify-content-center">
-                            <i class="bi bi-download me-1"></i> Lưu
-                        </a>
+                        <div class="action-buttons d-flex justify-content-center align-items-center">
+                            <!-- Download -->
+                            <a href="@url" download class="btn btn-light btn-sm mx-1">
+                                <i class="bi bi-download"></i>
+                            </a>
 
-                        <form asp-controller="Image"
-                              asp-action="Delete"
-                              method="post"
-                              class="w-100 text-center">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="imageUrl" value="@url" />
-                            <button type="submit"
-                                    class="btn btn-danger btn-sm w-100"
-                                    onclick="return confirm('Bạn có chắc muốn xóa ảnh này không?');">
-                                <i class="bi bi-trash me-1"></i> Xóa
-                            </button>
-                        </form> 
-                        @if (isImageToImage || isFromPrompt)
-                        {
-                            <form method="post" action="/Image/ContinueWithImage" class="w-100">
+                            <!-- Delete -->
+                            <form asp-controller="Image"
+                                  asp-action="Delete"
+                                  method="post"
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa ảnh này không?');"
+                                  class="mx-1">
                                 @Html.AntiForgeryToken()
-                                <input type="hidden" name="imagePath" value="@url" />
-                                <button type="submit" class="btn btn-warning btn-sm w-100">
-                                    <i class="bi bi-arrow-right-circle me-1"></i> Sáng tạo ảnh
+                                <input type="hidden" name="imageUrl" value="@url" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </form>
-                        }
+
+                            @* Nút “Sáng tạo ảnh” chỉ hiển thị với ảnh ImageToImage hoặc từ prompt *@
+                            @if (isImageToImage || isFromPrompt)
+                            {
+                                <form method="post"
+                                      action="/Image/ContinueWithImage"
+                                      class="mx-1">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="imagePath" value="@url" />
+                                    <button type="submit" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-arrow-right-circle"></i>
+                                    </button>
+                                </form>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
         }
-
     </div>
 </section>
+
+<style>
+    /* Overlay cho nút Download / Delete / Sáng tạo */
+    .gallery-item .action-buttons {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity .3s ease;
+        border-radius: .25rem;
+    }
+
+    .gallery-item:hover .action-buttons {
+        opacity: 1;
+    }
+
+    body {
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 70px; /* chiều cao của footer + một chút đệm */
+    }
+    /* Dán footer xuống đáy viewport */
+    footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+</style>
